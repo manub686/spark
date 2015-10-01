@@ -716,7 +716,23 @@ class SQLContext(@transient val sparkContext: SparkContext)
    * @since 1.3.0
    */
   def sql(sqlText: String): DataFrame = {
-    DataFrame(this, parseSql(sqlText))
+    //DataFrame(this, parseSql(sqlText))
+    //MB
+    println(s"--------------------------------------")
+    println(sqlText)
+    println(parseSql(sqlText))
+    val parsedSql = myRewrite(sqlText)
+    println(s"--------------------------------------")
+    DataFrame(this, parsedSql)
+    //MB
+  }
+
+  def myRewrite(sqlText: String): LogicalPlan = {
+    println("rewriting sql query")
+    val newSqlText = sqlText.replaceAll("srecords", "srecords_approx")
+    println("sql query after rewrite:")
+    println(newSqlText)
+    parseSql(newSqlText)
   }
 
   /**
